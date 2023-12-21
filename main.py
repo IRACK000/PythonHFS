@@ -1,5 +1,7 @@
-import os
 import time
+import pyotp     # pyotp
+import datetime  # 시간 라이브러리
+
 from pathlib import Path
 
 from fastapi import FastAPI, Depends, HTTPException
@@ -22,9 +24,15 @@ security = HTTPBasic()
 # Jinja2 템플릿 설정
 templates = Jinja2Templates(directory="templates")
 
+# otp에 사용할 키 (ex)
+otp_key = 'GAYDAMBQGAYDAMBQGAYDAMBQGA======'
+
+# totp 생성
+totp = pyotp.TOTP(otp_key)
+
 
 def get_current_directory(credentials: HTTPBasicCredentials = Depends(security)):
-    if credentials.username != "1" or credentials.password != "2222":
+    if credentials.username != "1" or credentials.password != f"2222{totp.now()}":
         raise HTTPException(status_code=401, detail="Invalid credentials")
     return file_directory
 
@@ -40,7 +48,7 @@ def fix_trailing_slash(request: Request):
 def get_file_info(file_path: Path):
     file_stat = file_path.stat(follow_symlinks=True)
     modified_timestamp = file_stat.st_mtime
-    size = file_stat.st_size
+    size = file_stat.st_size1
     if size > 1000000000:  # 1GB
         file_size = f"{size / 1000000000:.2f} GB"
     elif size > 1000000:  # 1MB
