@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CU's WorkStation | Directory - {{ directory_name }}</title>
+    <style>
+        @font-face {
+            font-family: 'SUIT-Regular';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            font-family: SUIT-Regular, sans-serif;
+            margin: 0;
+            background: #e2ddd6;
+        }
+
+        .file-manager {
+            margin: 200px 80px 40px;
+            background: #e2ddd6;
+            z-index: 3;
+        }
+
+        @media (max-width: 991px) {
+            .file-manager {
+                margin-left: 20px;
+                margin-right: 20px;
+            }
+        }
+
+        .half-circle {
+            position: fixed;
+            background-color: #ff8c00;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            display: inline-block;
+            left: -100px;
+            top: 0px;
+            z-index: 1;
+        }
+
+        .triangle {
+            position: fixed;
+            width: 100px;
+            height: 100px;
+            transform: rotate(230deg);
+            top: -40px;
+            left: 20px;
+            z-index: 2;
+        }
+
+        .top-half-circle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1;
+        }
+
+        .bottom-circle-container {
+            height: 120px;
+        }
+
+        .bottom-circle {
+            position: fixed;
+            background-color: #b786cd;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            display: inline-block;
+            right: 20px;
+            bottom: -80px;
+            z-index: 1;
+        }
+
+        .bottom-circle-hider {
+            position: fixed;
+            background-color: #e2ddd6;
+            width: 200px;
+            height: 100px;
+            border-radius: 0%;
+            display: inline-block;
+            right: 20px;
+            bottom: -80px;
+            z-index: 2;
+        }
+
+        h1 {
+            position: fixed;
+            color: #000;
+            top: 90px;
+            z-index: 2;
+            font-size: 40px;
+        }
+
+        .file-upload-label {
+            position: fixed;
+            padding: 8px 16px;
+            top: 136px;
+            right: 80px;
+            z-index: 2;
+            background-color: #000;
+            color: #fff;
+        }
+
+        @media (max-width: 991px) {
+            .file-upload-label {
+                right: 20px;
+            }
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .folder-link, .file-link {
+            display: block;
+            color: #fff;
+            text-decoration: none;
+            background-color: rgb(0, 0, 0);
+        }
+
+        .file-link:hover, .folder-link:hover {
+            background-color: #383329;
+            color: #fff;
+        }
+
+        a {
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            color: #fff;
+            display: table;
+        }
+
+        .file-stat {
+            margin-left: 10px;
+            margin-right: 10px;
+            display: table-cell;
+            vertical-align: middle;
+            width: 450px;
+        }
+
+        .file-stat-date {
+            display: inline-block;
+            width: 180px;
+        }
+
+        span {
+            padding: 5px 10px;
+            color: #000;
+            font-weight: bold;
+            text-decoration: none;
+            background-color: #b99742;
+        }
+
+        .file-span {
+            background-color: #d3723c;
+        }
+
+        .link-span {
+            background-color: #b786cd;
+        }
+
+        .file-info {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .file-info-name {
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .file-info-size {
+            margin: 0;
+            color: #c5c5c5;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            a {
+                padding: 20px;
+                display: block;
+            }
+
+            .file-stat {
+                display: block;
+                width: 400px;
+            }
+
+            .file-info {
+                margin-top: 10px;
+                margin-right: 10px;
+                margin-left: 10px;
+                display: block;
+                vertical-align: bottom;
+            }
+        }
+
+        @media (max-width: 465px) {
+            h1 {
+                top: 40px;
+            }
+
+            a {
+                padding: 14px;
+                display: block;
+            }
+
+            .file-stat {
+                display: block;
+                width: 350px;
+                margin-left: 6px;
+                margin-right: 6px;
+            }
+
+            .file-stat-date {
+                width: 130px;
+                font-size: 12px;
+            }
+
+            .bi-clock {
+                height: 10px;
+                width: 10px;
+            }
+
+            .link-span, .file-span, .folder-span {
+                font-size: 12px;
+            }
+
+            .file-info {
+                margin-top: 6px;
+                margin-right: 6px;
+                margin-left: 6px;
+                display: block;
+                vertical-align: bottom;
+            }
+        }
+
+        @media (max-width: 365px) {
+            h1 {
+                top: 40px;
+            }
+
+            a {
+                padding: 10px;
+                display: block;
+            }
+
+            .file-stat {
+                display: block;
+                width: 250px;
+                margin-left: 4px;
+                margin-right: 4px;
+            }
+
+            .file-stat-date {
+                width: 110px;
+                font-size: 11px;
+            }
+
+            .bi-clock {
+                height: 9px;
+                width: 9px;
+            }
+
+            .link-span, .file-span, .folder-span {
+                font-size: 11px;
+            }
+
+            .file-info {
+                margin-top: 4px;
+                margin-right: 4px;
+                margin-left: 4px;
+                margin-bottom: 4px;
+                display: block;
+                vertical-align: bottom;
+            }
+
+            .file-info-name {
+                font-size: 14px;
+            }
+
+            .file-info-size {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="half-circle"></div>
+<div class="triangle">
+    <svg width="36" height="61" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" overflow="hidden"><g transform="translate(-2478 -490)"><path d="M2480.5 549.5 2496 495.5 2511.5 549.5Z" stroke="#000000" stroke-width="3.4375" stroke-miterlimit="8" fill="none" fill-rule="evenodd"/></g></svg>
+</div>
+<svg class="top-half-circle" width="64" height="33" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" overflow="hidden"><defs><clipPath id="clip0"><rect x="2353" y="489" width="64" height="33"/></clipPath></defs><g clip-path="url(#clip0)" transform="translate(-2353 -489)"><path d="M2353.08 489 2416.92 489 2417 489.829C2417 507.597 2402.67 522 2385 522 2367.33 522 2353 507.597 2353 489.829Z" fill-rule="evenodd"/></g></svg>
+<section class="file-manager">
+    <div class="header-container">
+        <h1>Directory Listing: {{ directory_name }}</h1>
+        <label for="file-upload" class="file-upload-label">Upload File</label>
+        <input type="file" id="file-upload" style="display: none;">
+    </div>
+    <ul>
+        {% for item in items %}
+        <li>
+            <a href="{{ item.url }}" class="{{ 'folder-link' if item.is_directory else 'file-link' }}">
+                <div class="file-stat">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
+                        <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
+                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
+                    </svg>
+                    <text class="file-stat-date">{{ item.date }}</text>
+                    <span class="{{ 'link-span' if '../' in item.url else 'folder-span' if item.is_directory else 'file-span' }}"
+                    >{{ 'Directory Navigation' if '../' in item.url else 'Folder Link' if item.is_directory else 'File Resource' }}</span>
+                </div>
+                <div class="file-info">
+                    <p class="file-info-name">{{ item.name }}</p>
+                    <p class="file-info-size">{{ item.size }}</p>
+                </div>
+            </a>
+        </li>
+        {% if not loop.last %}
+        {% endif %}
+        {% endfor %}
+    </ul>
+    <div class="bottom-circle-container">
+        <div class="bottom-circle"></div>
+        <div class="bottom-circle-hider"></div>
+    </div>
+</section>
+<script>
+    // JavaScript 코드
+    document.addEventListener('scroll', function() {
+        // 스크롤 위치에 따라 투명도 조절
+        let scrollPosition = window.scrollY;
+        let scrollMaxY = window.scrollMaxY || (document.documentElement.scrollHeight - document.documentElement.clientHeight);
+        let transparency = Math.min(10 / scrollPosition, 1);
+        let transparency1 = Math.min(5 / scrollPosition, 1);
+        let transparency2 = Math.min(3 / scrollPosition, 1);
+        let transparency3 = scrollPosition / scrollMaxY / 5
+        if (scrollPosition === scrollMaxY) {
+            transparency3 = 1
+        }
+
+        document.querySelector('.half-circle').style.opacity = transparency1;
+        document.querySelector('.top-half-circle').style.opacity = transparency;
+        document.querySelector('.triangle').style.opacity = transparency;
+        document.querySelector('.header-container').style.opacity = transparency2;
+        document.querySelector('.bottom-circle').style.opacity = transparency3;
+        document.querySelector('.bottom-circle-hider').style.opacity = transparency3;
+        console.log(scrollMaxY)
+        console.log(scrollPosition)
+    });
+</script>
+</body>
+</html>
