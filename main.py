@@ -38,7 +38,7 @@ def fix_trailing_slash(request: Request):
 def get_file_info(file_path: Path):
     file_stat = file_path.stat(follow_symlinks=True)
     modified_timestamp = file_stat.st_mtime
-    size = file_stat.st_size1
+    size = file_stat.st_size
     if size > 1000000000:  # 1GB
         file_size = f"{size / 1000000000:.2f} GB"
     elif size > 1000000:  # 1MB
