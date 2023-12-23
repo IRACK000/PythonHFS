@@ -3,6 +3,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
@@ -12,6 +13,7 @@ from settings import check_user, guest_directory
 
 
 app = FastAPI()
+app.mount("/res", StaticFiles(directory="res"), name="res")
 
 # HTTP 기본 인증을 사용합니다.
 security = HTTPBasic()
@@ -99,4 +101,3 @@ def read_files(request: Request, file_path: str, current_directory: Path = Depen
         )
     else:
         raise HTTPException(status_code=404, detail="Resource not found")
-
