@@ -1,4 +1,4 @@
-from fastapi_cache.decorator import cache
+from cachetools import cached,  TTLCache
 from pathlib import Path
 import pyotp
 
@@ -22,7 +22,7 @@ __import_settings(__setting)
 guest_directory = __setting['guest_dir']
 
 
-@cache(expire=60*5)  # cache for five minutes
+@cached(cache=TTLCache(maxsize=128, ttl=60*5))  # cache for five minutes
 def check_user(username: str, password: str) -> Path:
     try:
         users = __setting['users']

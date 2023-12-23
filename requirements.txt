@@ -3,4 +3,4 @@ starlette~=0.27.0
 jinja2~=3.1.2
 uvicorn~=0.24.0
 pyotp~=2.9.0
-fastapi-cache2~=0.2.1
+cachetools~=5.3.2
