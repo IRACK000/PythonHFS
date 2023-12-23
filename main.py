@@ -1,4 +1,5 @@
 import time
+import urllib.parse
 from pathlib import Path
 
 from fastapi import FastAPI, Depends, HTTPException
@@ -61,6 +62,8 @@ async def read_searchable_shared_file(request: Request, file_path: str, current_
 @app.get("/share/{file_path:path}")
 async def read_shared_file(request: Request, file_path: str, current_directory: Path = guest_directory):
     # share 디렉토리에 대한 요청은 인증 없이 진행됩니다.
+    if file_path == "link":
+        return fix_trailing_slash(request)
     file_location = current_directory / file_path
     if not file_location.is_file():
         raise HTTPException(status_code=404, detail="File not found")
@@ -77,8 +80,9 @@ def read_files(request: Request, file_path: str, current_directory: Path = Depen
     file_location = current_directory / file_path
     if file_location.is_file():
         # 파일 다운로드를 위한 헤더 설정
+        file_name = file_path.split('/')[-1]
         headers = {
-            "Content-Disposition": f"attachment; filename={file_path.split('/')[-1]}",
+            "Content-Disposition": f"attachment; filename*=UTF-8''{urllib.parse.quote(file_name)}",
         }
         return FileResponse(file_location, headers=headers)
     elif file_location.is_dir():
