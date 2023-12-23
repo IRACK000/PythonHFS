@@ -1,7 +1,4 @@
 import time
-import pyotp     # pyotp
-import datetime  # 시간 라이브러리
-
 from pathlib import Path
 
 from fastapi import FastAPI, Depends, HTTPException
@@ -11,12 +8,10 @@ from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
 from starlette.requests import Request
 
+from settings import check_user, guest_directory
+
 
 app = FastAPI()
-
-# 파일이 위치한 디렉토리를 지정합니다.
-file_directory = Path("./")
-guest_directory = file_directory / "temp"
 
 # HTTP 기본 인증을 사용합니다.
 security = HTTPBasic()
@@ -24,17 +19,12 @@ security = HTTPBasic()
 # Jinja2 템플릿 설정
 templates = Jinja2Templates(directory="templates")
 
-# otp에 사용할 키 (ex)
-otp_key = 'GAYDAMBQGAYDAMBQGAYDAMBQGA======'
-
-# totp 생성
-totp = pyotp.TOTP(otp_key)
-
 
 def get_current_directory(credentials: HTTPBasicCredentials = Depends(security)):
-    if credentials.username != "1" or credentials.password != f"2222{totp.now()}":
+    try:
+        return check_user(credentials.username, credentials.password)
+    except ValueError as _:
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    return file_directory
 
 
 def fix_trailing_slash(request: Request):
