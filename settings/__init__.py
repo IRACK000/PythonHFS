@@ -3,10 +3,10 @@ from pathlib import Path
 import pyotp
 
 try:
-    from setting_local import setting as __setting
+    from .setting_local import setting as __setting
 except ModuleNotFoundError as e:
     print(e, "Could not find setting.local.py. Please use localized settings file instead of default settings file.")
-    from setting import setting as __setting
+    from .setting import setting as __setting
 
 
 def __import_settings(setting: dict):
