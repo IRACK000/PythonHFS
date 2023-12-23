@@ -114,6 +114,6 @@ def read_files(request: Request, file_path: str, current_directory: Path = Depen
                         if candidate.is_file():
                             return templates.TemplateResponse(
                                 f"player{'5' if _type == 0 else ''}.html",
-                                {"request": request, "file_name": candidate.name, "video_url": url},
+                                {"request": request, "file_name": candidate.name, "video_url": f"./{url}"},
                             )
         raise HTTPException(status_code=404, detail="Resource not found")
