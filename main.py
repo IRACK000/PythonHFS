@@ -103,18 +103,19 @@ def read_files(request: Request, file_path: str, current_directory: Path = Depen
             "directory_listing.html",
             {"request": request, "directory_name": file_location.name if file_location.name else "root", "items": items},
         )
-    elif file_path.endswith(".html"):
-        file_location = current_directory / file_path.replace(".html", "")
-        video_ext = [".mp4", ".webm", ".ogg"], [".mkv", ".avi", ".mov", ".wmv", ".ts"]  # html5, not html5
-        for _type, ext_type in enumerate(video_ext):
-            for ext in ext_type:
-                candidate = file_location / ext
-                if candidate.is_file():
-                    url = file_path.replace(".html", ext)
-                    return templates.TemplateResponse(
-                        f"player{'5' if _type == 0 else ''}.html",
-                        {"request": request, "file_name": candidate.name, "video_url": url},
-                    )
-
     else:
+        if file_path.endswith(".html"):
+            file_location = current_directory / file_path.replace(".html", "")
+            print(file_location)
+            video_ext = [".mp4", ".webm", ".ogg"], [".mkv", ".avi", ".mov", ".wmv", ".ts"]  # html5, not html5
+            for _type, ext_type in enumerate(video_ext):
+                for ext in ext_type:
+                    for extt in (ext, ext.upper()):
+                        candidate = file_location / extt
+                        if candidate.is_file():
+                            url = file_path.replace(".html", extt)
+                            return templates.TemplateResponse(
+                                f"player{'5' if _type == 0 else ''}.html",
+                                {"request": request, "file_name": candidate.name, "video_url": url},
+                            )
         raise HTTPException(status_code=404, detail="Resource not found")
